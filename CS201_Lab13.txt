@@ -1,0 +1,26 @@
+Matt Ritchie
+
+Big-O
+*CODE = constant time segment
+
+Problem 1: O(N^2)
+	a loop runs CODE N-squared times
+
+Problem 2: O(N)
+	a loop running CODE N times runs twice (two is a constant, i.e. CODE*2)
+
+Problem 3: O(N^2)
+	inner loop executed CODE 0+1+2+...+(N-1) = (N/2)(N-1) total times
+	(N/2)(N-1)*CODE = N^2
+
+Problem 4: O(1)
+	a loop runs CODE 10000000 times, constants don't count
+
+Problem 5: (professor-voided)
+	inner loop executed CODE 
+
+Problem 6: O(base 2 log N)
+	N = 2^k where k is how many times you can double 1 before hitting N
+
+Problem 7: O(N^3)
+	3 nested loops, each running N times

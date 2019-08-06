@@ -1,0 +1,117 @@
+Attempt 1: frozen from " instead of '
+
+SQL> create table books (
+    book_id int
+        primary key generated always as identity (start with 1, increment by 1),
+    author_id int,
+    title varchar(50),
+    isbn varchar(20)
+);
+
+create table authors (
+    author_id int
+        primary key generated always as identity (start with 1, increment by 1),
+    author_lastname varchar(40),
+    author_firstname varchar(40)
+);OK (0 rows(s))
+SQL> 
+OK (0 rows(s))
+SQL> import books books.csv;
+
+import authors authors.csv;Importing data for table: <books>
+Successful import
+SQL> alter table books
+    add foreign key (author_id)
+    references authors (author_id);Importing data for table: <authors>
+Successful import
+SQL> select books.title
+    from books, authors
+    where books.author_id = authors.author_id
+        and authors.author_lastname = 'Smallfinger' and authors.author_firstname = 'F.G.'OK (0 rows(s))
+SQL> 
+select * from books;
+Error: Syntax error: Encountered "select" at line 5, column 1.
+SQL> select * from books;
+BOOK_ID AUTHOR_ID                            TITLE          ISBN
+------- --------- -------------------------------- -------------
+      1         1                A History of Hats 0-651-65165-4
+      2         2    Guide to Impossible Buildings 82-234-5475-0
+      3         3      First Flights in Witchcraft 5-9672-6521-X
+      4         4             Habits of the Wolves 91-33-65168-X
+      5         5              Sieges and Survival 0-651-65165-4
+      6         5 VENI VIDI VICI: A Soldier's Life 84-15978-99-5
+OK (6 rows(s))
+SQL> select * from authors;
+AUTHOR_ID AUTHOR_LASTNAME AUTHOR_FIRSTNAME
+--------- --------------- ----------------
+        1     Smallfinger             F.G.
+        2       Whittlbey           W.H.J.
+        3          Earwig          Lettice
+        4         Lightly             W.E.
+        5        Tacticus           Callus
+OK (5 rows(s))
+SQL> select books.title
+    from books, authors
+    where books.author_id = authors.author_id
+        and authors.author_lastname = 'Smallfinger' and authors.author_firstname = 'F.G.';
+            TITLE
+-----------------
+A History of Hats
+OK (1 rows(s))
+SQL> select books.title
+    from books, authors
+    where books.author_id = authors.author_id
+        and authors.author_lastname = 'Tacticus' and authors.author_firstname = 'Callus';
+                           TITLE
+--------------------------------
+             Sieges and Survival
+VENI VIDI VICI: A Soldier's Life
+OK (2 rows(s))
+SQL> select books.title
+    from books, authors
+    where books.author_id = authors.author_id
+        and authors.author_lastname = 'Tacticus' and authors.author_firstname = 'Callus';
+                           TITLE
+--------------------------------
+             Sieges and Survival
+VENI VIDI VICI: A Soldier's Life
+OK (2 rows(s))
+SQL> select authors.author_firstname, authors.author_lastname, books.isbn
+ from books, authors
+  where books.author_id = authors.author_id
+and books.title = 'First Flights in Witchcraft';
+AUTHOR_FIRSTNAME AUTHOR_LASTNAME          ISBN
+---------------- --------------- -------------
+         Lettice          Earwig 5-9672-6521-X
+OK (1 rows(s))
+SQL> insert into books (author_id, title, isbn) values (11, 'Awesome book', '888-9999-202');
+Error: INSERT on table 'BOOKS' caused a violation of foreign key constraint 'SQL161207130349140' for key (11).  The statement has been rolled back.
+SQL> insert into authors (author_lastname, author_firstname) values ('Ritchie', 'Matthew");
+
+insert into authors (author_lastname, author_firstname) values ('Ritchie', 'Matthew');
+
+
+
+Attempt 2: it picked up where it got hung up
+
+SQL> insert into authors (author_lastname, author_firstname) values ('Ritchie', 'Matthew');
+OK (0 rows(s))
+SQL> select authors.author_id from authors
+where authors.author_lastname = 'Ritchie';
+AUTHOR_ID
+---------
+        6
+OK (1 rows(s))
+SQL> insert into books (author_id, title, isbn) values (6, 'Capturing the Dark', '666-666-666');
+OK (0 rows(s))
+SQL> select * from authors;
+AUTHOR_ID AUTHOR_LASTNAME AUTHOR_FIRSTNAME
+--------- --------------- ----------------
+        1     Smallfinger             F.G.
+        2       Whittlbey           W.H.J.
+        3          Earwig          Lettice
+        4         Lightly             W.E.
+        5        Tacticus           Callus
+        6         Ritchie          Matthew
+OK (6 rows(s))
+SQL> 

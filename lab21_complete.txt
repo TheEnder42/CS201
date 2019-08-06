@@ -1,0 +1,52 @@
+Problem 1:
+
+when hight = n, there will be 2^n leaves
+
+IH(n): f(n) = # leaves in pbt of height n = 2^n
+
+Basis: F(0) should be 1 leaf
+f(0)=2^0=1 (good)
+
+Induction:
+expection is that height=1 results in 2 leaves
+IH(n+1):  f(n+1) = # leaves in pbt of height n+1 = 2^(n+1)
+Connect cases for n and n+1:
+  f(n+1) = 2 * f(n)
+      Justification: Because to create a pbt of height n+1, we add 2 children to each
+      leaf in the height n pbt
+Assume IH(n)
+  f(n+1) = 2 * (2^n)
+         = 2^1 * 2^n
+         = 2^(n+1)     -- matches expectation
+
+
+
+
+
+
+Problem 2:
+
+when hight = n, there will be 2^(n+1)-1 nodes
+
+IH(n): f(n) = # nodes in pbt of height n = 2^(n+1)-1
+
+Basis: F(0) should be 1 node
+f(0)=2^(0+1)-1=1 (good)
+
+Induction:
+expection is that height=1 results in 3 nodes
+IH(n+1):  f(n+1) = # nodes in pbt of height n+1 = 2^(n+1+1)-1
+Connect cases for n and n+1:
+  f(n+1) = 2^(n+1) + f(n)
+
+      Total # nodes in pbt of height n+1 is #nodes in height n pbt
+      plus #leaves in height n+1 pbt (which is 2(n+1) by result from
+      Prob 1.) 
+
+      /*Justification: Because to create a pbt of height n+1, we add 2 children nodes to each
+      leaf in the height n pbt, doubling the number of leaves and ading that number to 
+      the running sum of nodes*/
+Assume IH(n)
+  f(n+1) = 2^(n+1) + 2^(n+1) - 1
+         = 2(2^(n+1)) - 1
+         = 2^(n+2) - 1    -- matches expectation
